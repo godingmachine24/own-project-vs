@@ -3,15 +3,18 @@ var bottomGround;
 var topGround;
 var ball;
 var paddle;
+var paddle2;
 var score = 0;
 var gameOver = false; 
 var paddleImg;
+var paddle2Img;
 
 function preload() {
   bgImg = loadImage("assets/bg.png");
   ballImg = loadAnimation("assets/ball.png");
 
   paddleImg=loadImage("assets/paddle.png");
+  paddle2Img=loadImage("assets/paddle.png");
   
 }
 
@@ -25,11 +28,15 @@ function setup() {
 
   ball = createSprite(100, 200, 20, 20);
   ball.addAnimation("ball", ballImg);
+  ball.velocityY=10;
   ball.scale = 0.08;
   paddle = createSprite(200, 800, 100, 10);
   paddle.addImage(paddleImg)
   paddle.scale=0.2;
-  paddle.shapeColor = "yellow";
+  paddle2=createSprite(500,30,200,10);
+  paddle2.addImage(paddle2Img)
+  paddle2.scale=0.2;
+  
 
   score = 0;
 }
@@ -38,21 +45,37 @@ function draw() {
   background(bgImg);
   
   if (!gameOver) { 
-    if (keyDown("LEFT_ARROW")) {
-      paddle.velocityX = -5;
-    } else if (keyDown("RIGHT_ARROW")) {
-      paddle.velocityX = 5;
+    if (keyDown("a")) {
+      paddle2.velocityX = -7;
+    } else if (keyDown("d")) {
+      paddle2.velocityX = 7;
     }
-    
-    ball.velocityY=10;
 
+    if(!gameOver){
+      if(keyDown("LEFT_ARROW")){
+        paddle.velocityX=-5;
+      }else if(keyDown("RIGHT_ARROW")){
+        paddle.velocityX=5;
+      }
+    }
+ 
+    
+    
     if (ball.isTouching(paddle)) {
       ball.bounceOff(paddle);
       score++;
-      ball.velocityY = -500;
+      ball.velocityY = -10;
     }
+
+
+    if (ball.isTouching(paddle2)) {
+      ball.bounceOff(paddle2);
+      score++;
+      ball.velocityY = 10;
+    }
+
     if(ball.isTouching(topGround)){
-      ball.bounceOff(topGround)
+      gameOver=true;
     }
 
     if (ball.isTouching(bottomGround)) {
@@ -68,6 +91,7 @@ function draw() {
   fill(255);
   textSize(30);
   text("Score: " + score, 20, 30);
+  score.shapeColor="green";
 
   if (gameOver) {
     fill(255);
